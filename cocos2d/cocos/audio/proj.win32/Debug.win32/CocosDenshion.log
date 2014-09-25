@@ -1,0 +1,15 @@
+﻿生成启动时间为 2014/9/22 19:47:22。
+     1>项目“F:\cocosProject\imageContour\cocos2d\cocos\audio\proj.win32\CocosDenshion.vcxproj”在节点 4 上(Build 个目标)。
+     1>ClCompile:
+         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\include" /I..\Include /IF:\cocosProject\imageContour\cocos2d\cocos\2d\..\..\cocos /IF:\cocosProject\imageContour\cocos2d\cocos\2d\..\..\cocos\platform\win32 /IF:\cocosProject\imageContour\cocos2d\cocos\2d\..\..\cocos\platform\desktop /IF:\cocosProject\imageContour\cocos2d\cocos\2d\..\..\external\glfw3\include\win32 /I"F:\cocosProject\imageContour\cocos2d\cocos\2d\..\..\external\win32-specific\gles\include\OGLES" /ZI /nologo /W3 /WX- /MP /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _CRT_SECURE_NO_WARNINGS /D _VARIADIC_MAX=10 /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc110.pdb" /Gd /TP /wd4251 /analyze- /errorReport:prompt ..\win32\MciPlayer.cpp ..\win32\SimpleAudioEngine.cpp
+         MciPlayer.cpp
+         SimpleAudioEngine.cpp
+       Lib:
+         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\Lib.exe /OUT:"F:\cocosProject\imageContour\proj.win32\Debug.win32\libAudio.lib" /NOLOGO Debug.win32\MciPlayer.obj
+         Debug.win32\SimpleAudioEngine.obj
+         CocosDenshion.vcxproj -> F:\cocosProject\imageContour\proj.win32\Debug.win32\libAudio.lib
+     1>已完成生成项目“F:\cocosProject\imageContour\cocos2d\cocos\audio\proj.win32\CocosDenshion.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:53.03
