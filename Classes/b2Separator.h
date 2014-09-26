@@ -70,9 +70,10 @@ public:
         
     int Validate(const vector<b2Vec2>& verticesVec);
 
+	std::vector<b2Vec2> pointsfilter(std::vector<b2Vec2> vec);
     
 private:
-    
+	void vectorDebug(std::vector<b2Vec2> vec,std::string msg); 
     void calcShapes(vector<b2Vec2> &pVerticesVec, vector<vector<b2Vec2> > &result);
 	b2Vec2* hitRay(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
 	b2Vec2* hitSegment(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
@@ -84,6 +85,7 @@ private:
 	{
 		assert("A problem has occurred.Use the Validate() method to see where the problem is.");
 	}
+	float _scale;
 };
 
 #endif /* defined(__Thermite__b2Separator__) */

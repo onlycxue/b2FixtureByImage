@@ -27,6 +27,9 @@
     <ClCompile Include="..\Classes\b2Separator.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\b2FixtureByImage.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -42,6 +45,9 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\b2Separator.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\b2FixtureByImage.h">
       <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>
