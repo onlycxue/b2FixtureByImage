@@ -13,7 +13,7 @@ bool ImageContourScene::init()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	Image* image = new Image();
-	image->initWithImageFile("hero1.png");
+	image->initWithImageFile("hero0.png");
 	_data = image->getData();
 	CCLog("%s",_data);
 	_tolerance = 0x00;
@@ -21,7 +21,7 @@ bool ImageContourScene::init()
 	_texture = new Texture2D();
 	_texture->initWithImage(image);
 	
-	_sprite = Sprite::create("hero1.png");
+	_sprite = Sprite::create("hero0.png");
 	_sprite->setPosition(Vec2(visibleSize.width/2,visibleSize.height/2));
 	//addChild(_sprite,10);
 	box2dInit();
@@ -42,7 +42,11 @@ bool ImageContourScene::init()
 	b2Separator* separator = new b2Separator();
 	std::vector<b2Vec2> *vec = new std::vector<b2Vec2>();
 	
-	for(int i = _contourArray.size()-1; i >=0; i--)
+	//for(int i = _contourArray.size()-1; i >=0; i--)
+	//{
+	//	vec->push_back(b2Vec2(_contourArray[i].x,_contourArray[i].y));
+	//}
+	for(int i = 0; i < _contourArray.size() - 1; i++)
 	{
 		vec->push_back(b2Vec2(_contourArray[i].x,_contourArray[i].y));
 	}
@@ -279,9 +283,9 @@ std::vector<Vec2> ImageContourScene::marchingSquares(Texture2D* texture)
 			}
 			pX += stepX;
 			pY += stepY;
-			//Vec2 pos = _sprite->convertToWorldSpace(Vec2(pX,_sprite->getContentSize().height-pY));
+			Vec2 pos = _sprite->convertToWorldSpace(Vec2(pX,_sprite->getContentSize().height-pY));
 			
-			_contourArray.push_back(Vec2(pX,pY));
+			_contourArray.push_back(pos);
 			prevX = stepX;
 			prevY = stepY;
 			if(pX == startPos.x && pY ==  startPos.y)
