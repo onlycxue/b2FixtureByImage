@@ -14,8 +14,13 @@ class b2FixtureByImage
 public:
 	b2FixtureByImage(b2Body* body,std::string imageName,float factor = 0.5);
 
-	~b2FixtureByImage();
-		
+	~b2FixtureByImage(){};
+	Vec2* getImageContourPoints();
+	std::vector<Vec2> getImageContourVector();
+	std::vector<b2Vec2> getRDPVector();
+	Vec2* getRDPPoints();
+	
+private:		
 	Vec2 getStartingPixel(Texture2D* texture);
 	int getSquareValue(Vec2 pos);
 	std::vector<Vec2> marchingSquares(Texture2D* texture);
@@ -28,14 +33,10 @@ public:
 
 	std::vector<Vec2> sliceVectorForRDP(std::vector<Vec2> v);
 	void convertTob2Vec2(std::vector<b2Vec2>* target,std::vector<Vec2> source);
-	void draw(Renderer *renderer,const kmMat4 &transform,bool transformUpdated);
 	//向量的转化
 	Vec2* convertToVec2(std::vector<Vec2> array);
 	Vec2* convertToVec2(std::vector<b2Vec2> array);
-/*	b2Vec2* convertToB2Vec2(std::vector<Vec2> array);
 
-	void draw(Renderer *renderer,const kmMat4 &transform,bool transformUpdated);
-	*/;
 private:
 	std::string _imageName;
 	b2Body* _b2body;

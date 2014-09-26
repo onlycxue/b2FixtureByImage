@@ -1,6 +1,7 @@
 #include "b2FixtureByImage.h"
 #include "CCImage.h"
-	
+#include <algorithm>	
+
 b2FixtureByImage::b2FixtureByImage(b2Body* body,std::string imageName,float factor):
 	_b2body(body),_imageName(imageName)
 {
@@ -27,7 +28,9 @@ b2FixtureByImage::b2FixtureByImage(b2Body* body,std::string imageName,float fact
 		
 	convertTob2Vec2(_RDPArray,rdpVec);
 	_separator = new b2Separator();
-
+	
+	//	
+	reverse(_RDPArray->begin(),_RDPArray->end());
 	//验证数组是否通过
 	if(_separator->Validate(*_RDPArray) == 0)
 	{
@@ -42,6 +45,23 @@ b2FixtureByImage::b2FixtureByImage(b2Body* body,std::string imageName,float fact
 	_drawContourPoints = convertToVec2(_contourArray);
 	_drawRDPPoints = convertToVec2(*_RDPArray);
 
+}
+//对外的借口用于draw points
+Vec2* b2FixtureByImage::getImageContourPoints()
+{
+	return _drawContourPoints;
+}
+Vec2* b2FixtureByImage::getRDPPoints()
+{
+	return _drawRDPPoints;
+}
+std::vector<Vec2> b2FixtureByImage::getImageContourVector()
+{
+	return _contourArray;
+}
+std::vector<b2Vec2> b2FixtureByImage::getRDPVector()
+{
+	return *_RDPArray;
 }
 //获取开始点的像素坐标
 Vec2 b2FixtureByImage::getStartingPixel(Texture2D* texture)
@@ -165,9 +185,8 @@ std::vector<Vec2> b2FixtureByImage::marchingSquares(Texture2D* texture)
 			}
 			pX += stepX;
 			pY += stepY;
-			Vec2 pos = _sprite->convertToWorldSpace(Vec2(pX,_sprite->getContentSize().height-pY));
-			
-			_contourArray.push_back(pos);
+			//Vec2 pos = _sprite->convertToWorldSpace(Vec2(pX,_sprite->getContentSize().height-pY));
+			_contourArray.push_back(Vec2(pX,pY));
 			prevX = stepX;
 			prevY = stepY;
 			if(pX == startPos.x && pY ==  startPos.y)
@@ -276,18 +295,18 @@ void b2FixtureByImage::convertTob2Vec2(std::vector<b2Vec2>* target,std::vector<V
 		target->push_back(b2Vec2(source.at(i).x,source.at(i).y));
 	}
 }
-void b2FixtureByImage::draw(Renderer *renderer,const kmMat4 &transform,bool transformUpdated)
-{
-	//画图片的轮廓
-	DrawPrimitives::setPointSize(1);
-    DrawPrimitives::setDrawColor4B(0,255,255,255);
-	DrawPrimitives::drawPoints(_drawContourPoints,_contourArray.size());
-
-	//画RDP之后的点
-	DrawPrimitives::setPointSize(1);
-	DrawPrimitives::setDrawColor4B(255,0,0,255);
-	DrawPrimitives::drawPoints(_drawRDPPoints,_RDPArray->size());
-}
+//void b2FixtureByImage::draw(Renderer *renderer,const kmMat4 &transform,bool transformUpdated)
+//{
+//	//画图片的轮廓
+//	DrawPrimitives::setPointSize(1);
+//    DrawPrimitives::setDrawColor4B(0,255,255,255);
+//	DrawPrimitives::drawPoints(_drawContourPoints,_contourArray.size());
+//
+//	//画RDP之后的点
+//	DrawPrimitives::setPointSize(1);
+//	DrawPrimitives::setDrawColor4B(255,0,0,255);
+//	DrawPrimitives::drawPoints(_drawRDPPoints,_RDPArray->size());
+//}
 
 Vec2* b2FixtureByImage::convertToVec2(std::vector<Vec2> array)
 {
