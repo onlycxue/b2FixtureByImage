@@ -3,12 +3,12 @@
 #include <algorithm>	
 
 b2FixtureByImage::b2FixtureByImage(b2Body* body,std::string imageName,float factor):
-	_b2body(body),_imageName(imageName)
+	_b2body(body),_imageName(imageName),_RDPfactor(factor)
 {
 	_tolerance = 0x00;
 
 	Image* image = new Image();
-	image->initWithImageFile("hero0.png");
+	image->initWithImageFile(imageName);
 	_data = image->getData();
 
 	_texture = new Texture2D();
@@ -30,7 +30,7 @@ b2FixtureByImage::b2FixtureByImage(b2Body* body,std::string imageName,float fact
 	_separator = new b2Separator();
 	
 	//	
-	reverse(_RDPArray->begin(),_RDPArray->end());
+	//reverse(_RDPArray->begin(),_RDPArray->end());
 	//验证数组是否通过
 	if(_separator->Validate(*_RDPArray) == 0)
 	{
@@ -186,7 +186,9 @@ std::vector<Vec2> b2FixtureByImage::marchingSquares(Texture2D* texture)
 			pX += stepX;
 			pY += stepY;
 			//Vec2 pos = _sprite->convertToWorldSpace(Vec2(pX,_sprite->getContentSize().height-pY));
-			_contourArray.push_back(Vec2(pX,pY));
+			//Vec2 pos = Vec2(_b2body->GetPosition().x*PTM_RATIO+pX,_b2body->GetPosition().y*PTM_RATIO+pY);
+			//_contourArray.push_back(pos);
+			_contourArray.push_back(Vec2(pX,texture->getPixelsHigh()-pY));
 			prevX = stepX;
 			prevY = stepY;
 			if(pX == startPos.x && pY ==  startPos.y)
@@ -275,13 +277,13 @@ std::vector<Vec2> b2FixtureByImage::sliceVectorForRDP(std::vector<Vec2> v)
 	{
 		vec_1.push_back(v.at(i));
 	}
-	vec_1 = RDP(vec_1,8.0);
+	vec_1 = RDP(vec_1,_RDPfactor);
 	std::vector<Vec2> vec_2;
 	for(int i = v.size()/2; i < v.size(); i++)
 	{
 		vec_2.push_back(v.at(i));
 	}
-	vec_2 = RDP(vec_2,8.0);
+	vec_2 = RDP(vec_2,_RDPfactor);
 	std::vector<Vec2> vec;
 	vec = vec_1;
 	vec.insert(vec.end(),vec_2.begin(),vec_2.end());
@@ -310,19 +312,23 @@ void b2FixtureByImage::convertTob2Vec2(std::vector<b2Vec2>* target,std::vector<V
 
 Vec2* b2FixtureByImage::convertToVec2(std::vector<Vec2> array)
 {
+	float bodyX = _b2body->GetPosition().x*PTM_RATIO;
+	float bodyY = _b2body->GetPosition().y*PTM_RATIO;
 	Vec2* contourArray = (Vec2*)malloc(array.size()*sizeof(Vec2));
 	for(int i = 0; i < array.size(); i++)
 	{
-		contourArray[i] = Vec2(array.at(i).x,array.at(i).y);
+		contourArray[i] = Vec2(array.at(i).x+bodyX,array.at(i).y+bodyY);
 	}
 	return contourArray;
 }
 Vec2* b2FixtureByImage::convertToVec2(std::vector<b2Vec2> array)
 {
+	float bodyX = _b2body->GetPosition().x*PTM_RATIO;
+	float bodyY = _b2body->GetPosition().y*PTM_RATIO;
 	Vec2* contourArray = (Vec2*)malloc(array.size()*sizeof(Vec2));
 	for(int i = 0; i < array.size(); i++)
 	{
-		contourArray[i] = Vec2(array.at(i).x,array.at(i).y);
+		contourArray[i] = Vec2(array.at(i).x+bodyX,array.at(i).y+bodyY);
 	}
 	return contourArray;
 }

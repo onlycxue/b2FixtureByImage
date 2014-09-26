@@ -22,72 +22,106 @@ void b2Separator::Separate(b2Body* pBody, b2FixtureDef* pFixtureDef, vector<b2Ve
 		vec.push_back(b2Vec2(pVerticesVec->at(i).x,pVerticesVec->at(i).y));
 		//cocos2d::CCLog("change pos is (%f,%f)",pVerticesVec->at(i).x,pVerticesVec->at(i).y);
     }
-    
+    _scale = scale;
     calcShapes(vec, figsVec);
     n = figsVec.size();
     cocos2d::CCLog("the figsVec Size is %d",n);
     for (i=0; i<n; i++) {
-        vec = figsVec[i];
+		vectorDebug(figsVec[i],"change front:");
+        vec = pointsfilter(figsVec[i]);
+		vectorDebug(vec,"change over:");
         m = vec.size();
+		if(m == 0)
+			continue;
 
 		cocos2d::CCLog("the m is %d",m);
         vertices = new b2Vec2[m];
         for (j=0; j<m; j++) {
             vertices[j] = b2Vec2(vec[j].x/scale,vec[j].y/scale);
         }
-		if(m < 3 || m > 8 )
-		{
-			cocos2d::CCLog("the error pos is:");
-			for(int i = 0; i < m; i++)
-			{
-				cocos2d::CCLog("(%f,%f)",vertices[i].x,vertices[i].y);
-			}
-			//delete[] vertices;
-			//continue;
-		}
-		if(m < 3)
-		{
-			delete[] vertices;
-			continue;
-		}
-		if(m>8)
-		{
-			
-			std::vector<b2Vec2> newVector;
-			for(int i = 0,j = 0 ; i+j < m ; j++)
-			{
-				if((fabs(vertices[i].x - vertices[i+j].x) < 0.1) && fabs(vertices[i].y - vertices[i+j].y) < 0.1)
-				{
-					continue;
-				}
-				newVector.push_back(vertices[i]);
-				i = i+j;
-				j = 0;
-			}
-			int m = newVector.size();
-			cocos2d::CCLog("this new Vector size is %d",m);
-			delete[] vertices;
-			vertices = new b2Vec2[m];
-			for (j=0; j<m; j++)
-			{
-				cocos2d::CCLog("newVector:(%f,%f)",newVector[j].x,newVector[j].y);
-				vertices[j] = b2Vec2(newVector[j].x,newVector[j].y);
-			}
-			if(m > 8)
-			polyShape->Set(vertices, 8);
-			else
-			polyShape->Set(vertices, m);
-		}
-		else
-		{
-			polyShape->Set(vertices, m);
-		}
+
+		polyShape->Set(vertices, m);
         delete[] vertices;
         pFixtureDef->shape=polyShape;
         pBody->CreateFixture(pFixtureDef); 
     }
 }
-		/**
+//用来检测点的合法性
+std::vector<b2Vec2> b2Separator::pointsfilter(std::vector<b2Vec2> vec)
+{
+	if(vec.size() < 3)
+	{
+		return std::vector<b2Vec2>();
+	}
+	if(vec.size() > 8)
+	{
+		std::vector<b2Vec2> newVector;
+		int m = vec.size();
+		for(int i = 0,j = 0 ; i+j < m; j++)
+		{
+			if((fabs(vec[i].x/_scale - vec[i+j].x/_scale) < 0.1) && fabs(vec[i].y/_scale - vec[i+j].y/_scale) < 0.1)
+			{
+				continue;
+			}
+			newVector.push_back(vec[i]);
+			i = i+j;
+			j = 0;
+		}
+		newVector.push_back(vec[vec.size()-1]);	
+		m = newVector.size();
+		float factor = 0.1;
+		std::vector<b2Vec2> tempVector;
+		while(m>8)
+		{
+			tempVector.clear();
+			for(int i = 0,j = 0 ; i + j< m; j++)
+			{
+				if((fabs(vec[i].x/_scale - vec[i+j].x/_scale) < factor) && fabs(vec[i].y/_scale - vec[i+j].y/_scale) < factor)
+				{
+					continue;
+				}
+				tempVector.push_back(vec[i]);
+				i = i+j;
+				j = 0;
+			}
+			tempVector.push_back(vec[vec.size()-1]);
+			factor += 0.05;
+			m = tempVector.size();
+		}
+		return tempVector;
+	}
+	//在合法的点中删除相似的点
+	std::vector<b2Vec2> newVector;
+	for(int i = 0,j = 0 ; i+j< vec.size() ; j++)
+	{
+		if((fabs(vec[i].x/_scale - vec[i+j].x/_scale) < 0.1) && fabs(vec[i].y/_scale - vec[i+j].y/_scale) < 0.1)
+		{
+			continue;
+		}
+		newVector.push_back(vec[i]);
+		i = i+j;
+		j = 0;
+	}	
+	newVector.push_back(vec[vec.size()-1]);
+	if(newVector.size() < 3)
+	{
+		return std::vector<b2Vec2>();
+	}
+	else
+	{
+		return newVector;
+	}
+	return std::vector<b2Vec2>();
+}
+void b2Separator::vectorDebug(std::vector<b2Vec2> vec,std::string msg)
+{
+	cocos2d::CCLog(msg.c_str());
+	for(int i = 0; i < vec.size(); i++)
+	{
+		cocos2d::CCLog("(%f,%f)",vec.at(i).x,vec.at(i).y);
+	}
+}
+/**
 		 * Checks whether the vertices in can be properly distributed into the new fixtures (more specifically, it makes sure there are no overlapping segments and the vertices are in clockwise order). 
 		 * It is recommended that you use this method for debugging only, because it may cost more CPU usage.
 		 * @param verticesVec The vertices to be validated.
