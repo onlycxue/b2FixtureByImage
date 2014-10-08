@@ -12,12 +12,8 @@ bool ImageContourScene::init()
     }
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
 	box2dInit();
-	
-	_fixtureByImage = new b2FixtureByImage(_box2DBody,"hero3.png",4.0);
-	
-
+	_fixtureByImage = new b2FixtureByImage(_box2DBody,"hero0.png",4.0);
 	return true;
 }
 void ImageContourScene::box2dInit()
